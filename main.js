@@ -89,11 +89,10 @@ function pideJugador(numPartida, req, res) {
     let isFirst = false;
     // Si el total del jugador es menor a 11 nos interesa que el valor de AS sea 11, en caso contrario seguirá valiendo 1.
     if (partida.torn === 1) {
-        console.log("Entra torn jugador")
         isFirst = true;
         for (let i = 0; i < 2; i++) {
             jugadorAs(partida, carta);
-            console.log(`Ha sortit la carta ${partida.cartes[carta].nom}`)
+            console.log(`Jugador: Ha sortit la carta ${partida.cartes[carta].nom}`)
             partida.jugadorSum += partida.cartes[carta].value;
             partida.cartesJugador.push(partida.cartes[carta]);
             partida.numCarta -= 1;
@@ -102,7 +101,7 @@ function pideJugador(numPartida, req, res) {
         }
     } else {
         jugadorAs(partida, carta);
-        console.log(`Ha sortit la carta ${partida.cartes[carta].nom}`)
+        console.log(`Jugador: Ha sortit la carta ${partida.cartes[carta].nom}`)
         res.send(partida.cartes[carta]);
         partida.jugadorSum += partida.cartes[carta].value;
         partida.cartesJugador.push(partida.cartes[carta]);
@@ -114,8 +113,6 @@ function pideJugador(numPartida, req, res) {
 }
 
 function jugadorAs(partida, carta) {
-    console.log("Jugador: " + carta);
-    console.log(partida.cartes[carta].value);
     if (partida.cartes[carta].value == 1) {
         if (partida.jugadorSum < 11) {
             partida.cartes[carta].value = 11
@@ -134,7 +131,7 @@ function crupier(numPartida) {
             isFirst = true;
             for (let i = 0; i < 2; i++) {
                 crupierAs(partida, carta);
-                console.log(`Ha sortit la carta ${partida.cartes[carta].nom} al crupier`)
+                console.log(`Crupier: Ha sortit la carta ${partida.cartes[carta].nom}`)
                 partida.crupierSum += partida.cartes[carta].value;
                 partida.cartesCrupier.push(partida.cartes[carta]);
                 partida.numCarta -= 1;
@@ -143,20 +140,16 @@ function crupier(numPartida) {
             }
         } else {
             crupierAs(partida, carta);
-            console.log(`Ha sortit la carta ${partida.cartes[carta].nom} al crupier`)
+            console.log(`Crupier: Ha sortit la carta ${partida.cartes[carta].nom}`)
             partida.crupierSum += partida.cartes[carta].value;
             partida.cartesCrupier.push(partida.cartes[carta]);
             partida.numCarta -= 1;
             partida.cartes.splice(carta, 1);
         }
     }
-
-
 }
 
 function crupierAs(partida, carta) {
-    console.log("Crupier: " + carta);
-    console.log(partida.cartes[carta].value);
     if (partida.cartes[carta].value == 1) {
         if (partida.crupierSum < 11) {
             partida.cartes[carta].value = 11
@@ -169,7 +162,8 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/crearPartida', (req, res) => {
     console.log(`S\`ha creat la partida: ${req.body.codiPartida}`);
-    let partida = { codiPartida: parseInt(req.body.codiPartida), torn: 1, numCarta: 52, jugadorSum: 0, cartesJugador: [], crupierSum: 0, cartesCrupier: [], cartes: baralla };
+    let cartesBaralla = Array.from(baralla);
+    let partida = { codiPartida: parseInt(req.body.codiPartida), torn: 1, numCarta: 52, jugadorSum: 0, cartesJugador: [], crupierSum: 0, cartesCrupier: [], cartes: cartesBaralla };
     partides.push(partida);
     res.send(`Partida ${req.body.codiPartida} creada!`);
     //res.send(partides);
