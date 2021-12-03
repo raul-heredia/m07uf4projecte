@@ -82,19 +82,19 @@ function isPartidaGet(idPartida, req, res) {
     }
 }
 
-function isPartidaFinalitzada(numPartida, req, res){
+function isPartidaFinalitzada(numPartida, req, res) {
     let partida = partides.find(x => x.codiPartida === numPartida); // Busquem la partida que el seu codiPartida sigui igual a numPartida
-    if (partida.torn === -1){
+    if (partida.torn === -1) {
         res.status(404, 'error'); // Si no troba partida retorna un 404
         res.send(`No pots demanar més cartes, la partida ${numPartida} ha finalitzat`);
     }
-    
+
 }
 
 function pideJugador(numPartida, req, res) {
     let partida = partides.find(x => x.codiPartida === numPartida); // Busquem la partida que el seu codiPartida sigui igual a numPartida
     let carta = Math.floor(Math.random() * partida.numCarta);  // genera un numero aleatorio de 0 a numCarta (La primera vez vale 13 por lo que genera de 0 a 12)
-    
+
     if (partida.torn === 1) { // si es el primer torn 
         for (let i = 0; i < 2; i++) { // demanem dos cartes ja que la primera vegada es donen dues cartes
             jugadorAs(partida, carta); // Si el total del jugador es menor a 11 nos interesa que el valor de AS sea 11, en caso contrario seguirá valiendo 1.
@@ -160,32 +160,32 @@ function crupierAs(partida, carta) {
     }
 }
 
-function guanya(res){
+function guanya(res) {
     console.log('Has guanyat');
-    res.send ('Has guanyat');
+    res.send('Has guanyat');
 }
-function perd(res){
+function perd(res) {
     console.log('Has perdut');
-    res.send ('Has perdut');
+    res.send('Has perdut');
 }
 
 
-function comprovaResultat(numPartida, req, res){
+function comprovaResultat(numPartida, req, res) {
     let partida = partides.find(x => x.codiPartida === numPartida); // Busquem la partida que el seu codiPartida sigui igual a numPartida
     partida.torn = -1;
-    if (partida.crupierSum < partida.jugadorSum && partida.jugadorSum < 21){
+    if (partida.crupierSum < partida.jugadorSum && partida.jugadorSum < 21) {
         console.log("Guanya primer if");
         guanya(res);
-    }else if (partida.crupierSum > 21 && partida.jugadorSum < 21){
+    } else if (partida.crupierSum > 21 && partida.jugadorSum < 21) {
         console.log("Guanya segon if");
         guanya(res);
-    }else if(partida.jugadorSum == 21){
+    } else if (partida.jugadorSum == 21) {
         console.log("Guanya tercer if");
         guanya(res);
-    }else if(partida.crupierSum == 21){
+    } else if (partida.crupierSum == 21) {
         console.log("Perd quart if");
         perd(res);
-    }else if(partida.jugadorSum > 21){
+    } else if (partida.jugadorSum > 21) {
         console.log("Perd cinqué if");
         perd(res);
     }
@@ -221,17 +221,16 @@ app.get('/:codiPartida/mostraCartesCrupier', (req, res) => {
     isPartidaGet(idPartida, req, res);
     res.send(partides.find(a => a.codiPartida === parseInt(req.params.codiPartida)).cartesCrupier);
 });
-app.put ('/:codiPartida/plantarse', (req, res) => {
+app.put('/:codiPartida/plantarse', (req, res) => {
     let idPartida = parseInt(req.params.codiPartida);
     let partida = partides.find(x => x.codiPartida === idPartida); // Busquem la partida que el seu codiPartida sigui igual a numPartida
     isPartidaGet(idPartida, req, res);
     isPartidaFinalitzada(idPartida, req, res);
-    while (partida.crupierSum  < 17) crupier(idPartida, req, res); // mentre que sigui menor a 17 demana cartes
+    while (partida.crupierSum < 17) crupier(idPartida, req, res); // mentre que sigui menor a 17 demana cartes
     comprovaResultat(idPartida, req, res);
 });
-app.delete ('/:codiPartida/acabaPartida', (req, res) => {
+app.delete('/:codiPartida/acabaPartida', (req, res) => {
     let idPartida = parseInt(req.params.codiPartida);
-    let partida = partides.find(x => x.codiPartida === idPartida); // Busquem la partida que el seu codiPartida sigui igual a numPartida
     let index = partides.findIndex(obj => obj.codiPartida == idPartida);
     isPartidaGet(idPartida, req, res);
     partides.splice(index, 1);
