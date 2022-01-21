@@ -9,7 +9,7 @@
         <unpackNestedArchives>false</unpackNestedArchives>
       </options>
     </properties>
-    <root id="archive" name="DAW2-1.0-SNAPSHOT.war">
+    <root id="archive" name="blackjack-1.0-SNAPSHOT.war">
       <element id="artifact" artifact-name="blackjack:war exploded" />
     </root>
   </artifact>

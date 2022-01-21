@@ -24,4 +24,12 @@ public class Carta {
     public void setValue(int value) {
         this.value = value;
     }
+
+    @Override
+    public String toString() {
+        return "Carta{" +
+                "nom='" + nom + '\'' +
+                ", value=" + value +
+                '}';
+    }
 }

@@ -80,4 +80,18 @@ public class Partida {
     public void setCartes(ArrayList cartes) {
         this.cartes = cartes;
     }
+
+    @Override
+    public String toString() {
+        return "Partida{" +
+                "codiPartida=" + codiPartida +
+                ", torn=" + torn +
+                ", numCarta=" + numCarta +
+                ", jugadorSum=" + jugadorSum +
+                ", crupierSum=" + crupierSum +
+                ", cartesJugador=" + cartesJugador +
+                ", cartesCrupier=" + cartesCrupier +
+                ", cartes=" + cartes +
+                '}';
+    }
 }
