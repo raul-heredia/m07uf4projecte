@@ -34,7 +34,11 @@ public class Api {
             cartes.add(new Carta("Q", 10));
             cartes.add(new Carta("K", 10));
         }
-        partides.add(new Partida(1, (ArrayList) cartes));
+        if (partides.size() == 0){
+            ArrayList<Carta> ctemp = new ArrayList<>(cartes);
+            partides.add(new Partida(1, (ArrayList) ctemp));
+
+        }
     }
 
     @Path("/consultarPartides")
@@ -45,13 +49,15 @@ public class Api {
     }
 
 
+    @Path("/detallsPartida/{codiPartida}")
     @GET
-    @Path("/consultarPartida/{codiPartida}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String consultarPartida(@PathParam("codiPartida") int codiPartida) {
-        Partida partida = partides.stream().filter(a -> a.getCodiPartida() == codiPartida).collect(Collectors.toList()).get(0);
-        return partida.toString();
+    public String consultarTotsAlumnes(@PathParam("codiPartida") int codiPartida) {
+        Partida temp = new Partida(codiPartida);
+        int pos = partides.indexOf(temp);
+        return partides.get(pos).toString();
     }
+
     @POST
     @Path("/crearPartida")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)

@@ -6,6 +6,10 @@ public class Partida {
     private int codiPartida, torn, numCarta, jugadorSum, crupierSum;
     private ArrayList cartesJugador, cartesCrupier, cartes;
 
+    public Partida(int codiPartida){
+        this.codiPartida = codiPartida;
+    }
+
     public Partida(int codiPartida, ArrayList cartes) {
         this.codiPartida = codiPartida;
         this.torn = 1;
@@ -83,7 +87,7 @@ public class Partida {
 
     @Override
     public String toString() {
-        return "Partida{" +
+        return "{" +
                 "codiPartida=" + codiPartida +
                 ", torn=" + torn +
                 ", numCarta=" + numCarta +
@@ -93,5 +97,27 @@ public class Partida {
                 ", cartesCrupier=" + cartesCrupier +
                 ", cartes=" + cartes +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Partida other = (Partida) obj;
+        if (this.codiPartida != other.codiPartida) {
+            return false;
+        }
+        return true;
+    }
+
+    public void treureCarta(int n){
+        this.cartes.remove(n);
     }
 }

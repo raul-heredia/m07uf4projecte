@@ -27,7 +27,7 @@ public class Carta {
 
     @Override
     public String toString() {
-        return "Carta{" +
+        return "{" +
                 "nom='" + nom + '\'' +
                 ", value=" + value +
                 '}';
