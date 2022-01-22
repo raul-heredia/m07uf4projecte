@@ -13,7 +13,7 @@ public class Partida {
     public Partida(int codiPartida, ArrayList cartes) {
         this.codiPartida = codiPartida;
         this.torn = 1;
-        this.numCarta = 12;
+        this.numCarta = cartes.size();
         this.jugadorSum = 0;
         this.crupierSum = 0;
         this.cartesJugador = new ArrayList<Partida>();
@@ -45,6 +45,10 @@ public class Partida {
         this.numCarta = numCarta;
     }
 
+    public void decrementaNumCarta(){
+        this.numCarta --;
+    }
+
     public int getJugadorSum() {
         return jugadorSum;
     }
@@ -65,8 +69,8 @@ public class Partida {
         return cartesJugador;
     }
 
-    public void setCartesJugador(ArrayList cartesJugador) {
-        this.cartesJugador = cartesJugador;
+    public void setCartesJugador(Object carta) {
+        this.cartesJugador.add(carta);
     }
 
     public ArrayList getCartesCrupier() {
@@ -116,8 +120,16 @@ public class Partida {
         }
         return true;
     }
-
-    public void treureCarta(int n){
+    public void incrementaJugadorSum(Object carta){
+        //this.jugadorSum = this.jugadorSum + carta.
+    }
+    public Object treureCarta(int n){
+        Object carta = this.cartes.get(n);
+        incrementaJugadorSum(carta);
+        return carta;
+    }
+    public void eliminarCarta(int n){
+        decrementaNumCarta();
         this.cartes.remove(n);
     }
 }
