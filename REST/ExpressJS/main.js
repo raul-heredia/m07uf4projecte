@@ -188,6 +188,12 @@ function comprovaResultat(numPartida, req, res) {
     } else if (partida.jugadorSum > 21) {
         console.log("Perd cinqué if");
         perd(res);
+    } else if (partida.jugadorSum < partida.crupierSum && partida.crupierSum < 21) {
+        console.log("Perd sisé if");
+        return perd(res);
+    } else if (partida.jugadorSum == partida.crupierSum) {
+        console.log("Empat");
+        return "Hi ha un empat";
     }
 }
 app.get('/', (req, res) => res.send('Hello World!'));

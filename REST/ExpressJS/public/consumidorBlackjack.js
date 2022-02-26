@@ -1,8 +1,10 @@
 window.onload = main;
 
 function main() {
+    const sala = document.getElementById('sala');
     const crearPartida = document.getElementById('crearPartida');
     const crearPartidaBtn = document.getElementById('crearPartidaBtn');
+    const setPartidaBtn = document.getElementById('setPartidaBtn');
     const obtenirCarta = document.getElementById('obtenirCarta');
     const mostrarCartes = document.getElementById('mostrarCartes');
     const mostrarCartesCrupier = document.getElementById('mostrarCartesCrupier');
@@ -22,6 +24,7 @@ function main() {
     crearPartidaBtn.addEventListener('click', () => {
         if (crearPartida.value) {
             numPartida = crearPartida.value;
+            sala.innerText = `Sala actual: ${numPartida}`;
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
@@ -169,4 +172,8 @@ function main() {
             .catch(error => console.log('error', error));
     })
 
+    setPartidaBtn.addEventListener('click', () => {
+        numPartida = crearPartida.value;
+        sala.innerText = `Sala actual: ${numPartida}`;
+    })
 }
