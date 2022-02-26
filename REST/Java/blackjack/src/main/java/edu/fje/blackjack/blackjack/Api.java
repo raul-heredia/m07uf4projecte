@@ -62,7 +62,11 @@ public class Api {
     public String obtenirCarta(@PathParam("codiPartida") int codiPartida) {
         int index = buscaPartida(codiPartida);
         if(index != -1){
-            return partides.get(index).pideJugador();
+            if(partides.get(index).getTorn() != -1){
+                return partides.get(index).pideJugador();
+            }else{
+                return "Error, no pots demanar mes cartes, la partida ha acabat";
+            }
         }else{
             return "Error, la partida " + codiPartida + " no existeix";
         }

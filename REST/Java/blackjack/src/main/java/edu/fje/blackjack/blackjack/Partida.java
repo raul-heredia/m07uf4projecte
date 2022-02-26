@@ -114,27 +114,53 @@ public class Partida {
         this.numCarta = this.cartesPartida.size() - 1; // -1 porque empieza en 0
     }
 
+    public Object comprovaAsJugador(Object carta){
+        if((int) carta == 1){
+            if (this.jugadorSum <= 10){
+                return carta = 11;
+            }else{
+                return carta;
+            }
+        }else{
+            return carta;
+        }
+    }
+    public Object comprovaAsCrupier(Object carta){
+        if((int) carta == 1){
+            if (this.crupierSum <= 10){
+                return carta = 11;
+            }else{
+                return carta;
+            }
+        }else{
+            return carta;
+        }
+    }
+
+
     public void pideCrupier(){
         int max = this.getNumCarta() -1;
         int min = 0;
         int rand = ThreadLocalRandom.current().nextInt(min, max);
-        if (this.getTorn() == 1){
-            for (int i = 0; i < 2; i++) { // demanem dos cartes ja que la primera vegada es donen dues cartes
+        if(this.crupierSum < 17){
+            if (this.getTorn() == 1){
+                for (int i = 0; i < 2; i++) { // demanem dos cartes ja que la primera vegada es donen dues cartes
+                    Object carta = this.getCartesPartida().get(rand);
+                    this.afegeixCartaCrupier(this.comprovaAsCrupier(carta));
+                    this.afegeixSumaCrupier(this.comprovaAsCrupier(carta));
+                    this.getCartesPartida().remove(rand);
+                    this.reduceNumCarta();
+                    if (i == 0){
+                        rand = ThreadLocalRandom.current().nextInt(min, max);
+                    }
+                }
+            }else{
                 Object carta = this.getCartesPartida().get(rand);
-                this.afegeixCartaCrupier(carta);
-                this.afegeixSumaCrupier(carta);
+                this.afegeixCartaCrupier(this.comprovaAsCrupier(carta));
+                this.afegeixSumaCrupier(this.comprovaAsCrupier(carta));
                 this.getCartesPartida().remove(rand);
                 this.reduceNumCarta();
-                if (i == 0){
-                    rand = ThreadLocalRandom.current().nextInt(min, max);
-                }
             }
-        }else{
-            Object carta = this.getCartesPartida().get(rand);
-            this.afegeixCartaCrupier(carta);
-            this.afegeixSumaCrupier(carta);
-            this.getCartesPartida().remove(rand);
-            this.reduceNumCarta();
         }
     }
 
@@ -147,20 +173,20 @@ public class Partida {
         if (this.getTorn() == 1){
             for (int i = 0; i < 2; i++) { // demanem dos cartes ja que la primera vegada es donen dues cartes
                 Object carta = this.getCartesPartida().get(rand);
-                this.afegeixCartaJugador(carta);
-                this.afegeixSumaJugador(carta);
-                this.sumaTorn();
+                this.afegeixCartaJugador(this.comprovaAsJugador(carta));
+                this.afegeixSumaJugador(this.comprovaAsJugador(carta));
                 this.getCartesPartida().remove(rand);
                 this.reduceNumCarta();
                 if (i == 0){
                     rand = ThreadLocalRandom.current().nextInt(min, max);
                 }
             }
+            this.sumaTorn();
             return this.getCartesJugador().toString();
         }else{
             Object carta = this.getCartesPartida().get(rand);
-            this.afegeixCartaJugador(carta);
-            this.afegeixSumaJugador(carta);
+            this.afegeixCartaJugador(this.comprovaAsJugador(carta));
+            this.afegeixSumaJugador(this.comprovaAsJugador(carta));
             this.sumaTorn();
             this.getCartesPartida().remove(rand);
             this.reduceNumCarta();
@@ -197,6 +223,7 @@ public class Partida {
     }
 
     public String plantarse(){
+        this.torn = -1;
         return this.comprovaResultat();
     }
 
