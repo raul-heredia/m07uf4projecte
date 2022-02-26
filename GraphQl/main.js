@@ -13,7 +13,7 @@ app.use(express.static('public'));
 // Declarem una constant de la baralla
 const baralla = [
     { nom: 'AS de Trebols', value: 1 },
-    { nom: '2 de rebols', value: 2 },
+    { nom: '2 de Trebols', value: 2 },
     { nom: '3 de Trebols', value: 3 },
     { nom: '4 de Trebols', value: 4 },
     { nom: '5 de Trebols', value: 5 },

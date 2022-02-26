@@ -24,26 +24,26 @@ function main() {
     crearPartidaBtn.addEventListener('click', () => {
         if (crearPartida.value) {
             numPartida = crearPartida.value;
-            crearPartida.value = '';
             sala.innerText = `Sala actual: ${numPartida}`;
+            crearPartida.value = '';
+
 
             var myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-            var graphql = JSON.stringify({
-                query: `mutation{\r\n  crearPartida(codiPartida: ${numPartida})\r\n}`,
-                variables: {}
-            })
+            var urlencoded = new URLSearchParams();
+            urlencoded.append("codiPartida", numPartida);
+
             var requestOptions = {
                 method: 'POST',
                 headers: myHeaders,
-                body: graphql,
+                body: urlencoded,
                 redirect: 'follow'
             };
 
-            fetch("http://localhost:4000/graphql", requestOptions)
-                .then(response => response.json())
-                .then(result => infoPartida.innerHTML = result.data.crearPartida)
+            fetch("http://localhost:8080/blackjack_war_exploded/api/blackjack/crearPartida/", requestOptions)
+                .then(response => response.text())
+                .then(result => infoPartida.innerHTML = result)
                 .catch(error => console.log('error', error));
         }
 
@@ -51,37 +51,27 @@ function main() {
     // ###################################################
     // #                                                 #
     // #                                                 #
-    // #              Obtenir Carta                      #    
+    // #              Obtenir Carta                      #
     // #                                                 #
     // #                                                 #
     // ###################################################
     obtenirCarta.addEventListener('click', () => {
 
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var graphql = JSON.stringify({
-            query: `query{\r\n  obtenirCarta(codiPartida: ${numPartida})\r\n}`,
-            variables: {}
-        })
         var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: graphql,
+            method: 'GET',
             redirect: 'follow'
         };
 
-        fetch("http://localhost:4000/graphql", requestOptions)
+        fetch(`http://localhost:8080/blackjack_war_exploded/api/blackjack/obtenirCarta/${numPartida}`, requestOptions)
             .then(response => response.json())
             .then(result => {
                 infoPartida.innerHTML = '';
-                let cartes = JSON.parse(result.data.obtenirCarta);
                 try { // nomes es un array el primer torn
-                    cartes.forEach(carta => {
-                        infoPartida.innerHTML += `Ha sortit la carta ${carta.nom}<br />`;
+                    result.forEach(cartes => {
+                        infoPartida.innerHTML += `Ha sortit la carta amb valor ${cartes}<br />`;
                     })
                 } catch (e) {
-                    infoPartida.innerHTML += `Ha sortit la carta ${cartes.nom}<br />`;
+                    infoPartida.innerHTML += `Ha sortit la carta amb valor ${result}<br />`;
                 }
             })
             .catch(error => console.log('error', error));
@@ -89,48 +79,29 @@ function main() {
     // ###################################################
     // #                                                 #
     // #                                                 #
-    // #              Mostrar Cartes                     #    
+    // #              Mostrar Cartes                     #
     // #                                                 #
     // #                                                 #
     // ###################################################
     mostrarCartes.addEventListener('click', () => {
-
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var graphql = JSON.stringify({
-            query: `query{\r\n  mostraCartes(codiPartida: ${numPartida})\r\n}`,
-            variables: {}
-        })
         var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: graphql,
+            method: 'GET',
             redirect: 'follow'
         };
 
-        fetch("http://localhost:4000/graphql", requestOptions)
+        fetch(`http://localhost:8080/blackjack_war_exploded/api/blackjack/mostraCartes/${numPartida}`, requestOptions)
             .then(response => response.json())
             .then(result => {
                 infoPartida.innerHTML = '';
-                let cartes = JSON.parse(result.data.mostraCartes);
-                cartesJugador = []
-                cartes.forEach(carta => {
-                    let cartaTemp = {
-                        nom: carta.nom,
-                        value: carta.value
-                    }
-                    cartesJugador.push(cartaTemp);
-                });
                 let taula = document.createElement('TABLE');
                 taula.className = 'table table-hover'
-                taula.innerHTML = '<thead><tr><th scope="col">Nom de Carta</th><th scope="col">Valor</th></thead>';
+                taula.innerHTML = '<thead><tr><th scope="col">Valor de Carta</th></thead>';
+
                 let valorJugador = 0;
-                cartesJugador.forEach(cartes => {
+                result.forEach(cartes => {
                     let fila = taula.insertRow(-1); // amb insertRow(-1) afegim cada linia al final
-                    fila.insertCell(0).innerHTML = cartes.nom;
-                    fila.insertCell(1).innerHTML = cartes.value;
-                    valorJugador += cartes.value;
+                    fila.insertCell(0).innerHTML = cartes;
+                    valorJugador += cartes;
                 })
                 infoPartida.appendChild(taula);
                 let p = document.createElement('P');
@@ -138,40 +109,27 @@ function main() {
                 infoPartida.appendChild(p);
             })
             .catch(error => console.log('error', error));
-
     });
     // ###################################################
     // #                                                 #
     // #                                                 #
-    // #              Mostrar Cartes Crupier             #    
+    // #              Mostrar Cartes Crupier             #
     // #                                                 #
     // #                                                 #
     // ###################################################
     mostrarCartesCrupier.addEventListener('click', () => {
-
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var graphql = JSON.stringify({
-            query: `query{\r\n  mostraCartesCrupier(codiPartida: ${numPartida})\r\n}`,
-            variables: {}
-        })
         var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: graphql,
+            method: 'GET',
             redirect: 'follow'
         };
 
-        fetch("http://localhost:4000/graphql", requestOptions)
+        fetch(`http://localhost:8080/blackjack_war_exploded/api/blackjack/mostraCartesCrupier/${numPartida}`, requestOptions)
             .then(response => response.json())
             .then(result => {
-                let cartes = JSON.parse(result.data.mostraCartesCrupier);
                 infoPartida.innerHTML = `
                 <p>
-                Total de cartes: ${cartes.length}<br />
-                Carta visible: ${cartes[0].nom}<br />
-                Valor de la carta visible: ${cartes[0].value}
+                Total de cartes: ${result.length}<br />
+                Valor de la carta visible: ${result[0]}
                 `;
             })
             .catch(error => console.log('error', error));
@@ -179,74 +137,51 @@ function main() {
     // ###################################################
     // #                                                 #
     // #                                                 #
-    // #                   PLANTAR-SE                    #    
+    // #                   PLANTAR-SE                    #
     // #                                                 #
     // #                                                 #
     // ###################################################
     plantarse.addEventListener('click', () => {
         var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
-        var graphql = JSON.stringify({
-            query: `mutation{\r\n  plantarse(codiPartida: ${numPartida})\r\n}`,
-            variables: {}
-        })
+        var urlencoded = new URLSearchParams();
+        urlencoded.append("codiPartida", numPartida);
+
         var requestOptions = {
-            method: 'POST',
+            method: 'PUT',
             headers: myHeaders,
-            body: graphql,
+            body: urlencoded,
             redirect: 'follow'
         };
 
-        fetch("http://localhost:4000/graphql", requestOptions)
-            .then(response => response.json())
+        fetch("http://localhost:8080/blackjack_war_exploded/api/blackjack/plantarse", requestOptions)
+            .then(response => response.text())
             .then(result => {
-                let estatus = JSON.parse(result.data.plantarse);
-                infoPartida.innerHTML = `
-                <h2>${estatus.estat}</h2><br />
-                <p><b>El teu marcador és:</b> ${estatus.marcadorJugador}</p>
-                <p><b>El marcador del crupier és:</b> ${estatus.marcadorCrupier}
-                    `
+                console.log(result)
+                infoPartida.innerHTML = `<h2>${result}</h2>`
             })
             .catch(error => console.log('error', error));
     })
 
-    // ###################################################
-    // #                                                 #
-    // #                                                 #
-    // #                 Acabar Partida                  #    
-    // #                                                 #
-    // #                                                 #
-    // ###################################################
-
     acabaPartida.addEventListener('click', () => {
-        var myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-
-        var graphql = JSON.stringify({
-            query: `mutation{\r\n  acabarPartida(codiPartida: ${numPartida})\r\n}`,
-            variables: {}
-        })
         var requestOptions = {
-            method: 'POST',
-            headers: myHeaders,
-            body: graphql,
+            method: 'DELETE',
             redirect: 'follow'
         };
 
-        fetch("http://localhost:4000/graphql", requestOptions)
-            .then(response => response.json())
+        fetch(`http://localhost:8080/blackjack_war_exploded/api/blackjack/acabarPartida/${numPartida}`, requestOptions)
+            .then(response => response.text())
             .then(result => {
                 sala.innerText = `Crea una partida nova o selecciona una existent`;
-                infoPartida.innerHTML = result.data.acabarPartida
+                infoPartida.innerHTML = result;
             })
             .catch(error => console.log('error', error));
     })
 
     setPartidaBtn.addEventListener('click', () => {
         numPartida = crearPartida.value;
-        crearPartida.value = '';
         sala.innerText = `Sala actual: ${numPartida}`;
-        infoPartida.innerHTML = `S'ha canviat a la sala ${numPartida}`;
+        crearPartida.value = '';
     })
 }
