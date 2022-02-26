@@ -213,10 +213,10 @@ function comprovaResultat(numPartida) {
     } else if (partida.crupierSum > 21 && partida.jugadorSum < 21) {
         console.log("Guanya segon if");
         return guanya();
-    } else if (partida.jugadorSum == 21) {
+    } else if (partida.jugadorSum == 21 && (partida.crupierSum < 21 || partida.crupierSum > 21)) {
         console.log("Guanya tercer if");
         return guanya();
-    } else if (partida.crupierSum == 21) {
+    } else if (partida.crupierSum == 21 && (partida.jugadorSum < 21 || partida.jugadorSum > 21)) {
         console.log("Perd quart if");
         return perd();
     } else if (partida.jugadorSum > 21) {
@@ -295,7 +295,13 @@ const arrel = {
         if (isPartidaGet(codiPartida)) {
             if (!isPartidaFinalitzada(codiPartida)) {
                 while (partida.crupierSum < 17) crupier(codiPartida); // mentre que sigui menor a 17 demana cartes
-                return comprovaResultat(codiPartida);
+                let statusPartida = comprovaResultat(codiPartida);
+                let resposta = {
+                    estat: statusPartida,
+                    marcadorJugador: partida.jugadorSum,
+                    marcadorCrupier: partida.crupierSum
+                }
+                return JSON.stringify(resposta);
             } else {
                 return `La partida ${codiPartida} ha finalizado.`
             }
