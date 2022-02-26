@@ -99,8 +99,8 @@ function pideJugador(numPartida) {
             console.log(`Jugador: Ha sortit la carta ${partida.cartes[carta].nom}`) // printem per consola la carta que ha sortit
             partida.jugadorSum += partida.cartes[carta].value; // sumem el valor de la carta a la suma total del jugador
             partida.cartesJugador.push(partida.cartes[carta]); // afegim la carta que ha sortit al array de cartes del jugador
-            partida.numCarta -= 1; // Restem el numero total de cartes
             partida.cartes.splice(carta, 1); // Traiem la carta del arrai
+            partida.numCarta -= 1; // Restem el numero total de cartes
             if (i == 0) carta = Math.floor(Math.random() * partida.numCarta); // Si el valor de i val 0, traiem un altre número random
         }
         partida.torn++ // sumem el torn
@@ -111,9 +111,10 @@ function pideJugador(numPartida) {
         partida.jugadorSum += partida.cartes[carta].value; // sumem el valor de la carta al total de la suma del jugador
         partida.cartesJugador.push(partida.cartes[carta]); // Afegim la carta que ha sortit al array de cartes del jugador
         partida.numCarta -= 1; // restem el numero de cartes total
-        partida.cartes.splice(carta, 1); // Eliminem la carta del array de cartes total
         partida.torn++ // sumem el torn
-        return JSON.stringify(partida.cartes[carta]); // Retornem la carta que ha sortit al jugador
+        let cartaTemp = partida.cartes[carta];
+        partida.cartes.splice(carta, 1); // Eliminem la carta del array de cartes total
+        return JSON.stringify(cartaTemp); // Retornem la carta que ha sortit al jugador
     }
 
 }
@@ -161,11 +162,11 @@ function crupierAs(partida, carta) {
 
 function guanya() {
     console.log('Has guanyat');
-    return 'Has guanyat';
+    return 'Has Guanyat!';
 }
 function perd() {
     console.log('Has perdut');
-    return 'Has perdut';
+    return 'Has Perdut';
 }
 
 
@@ -173,25 +174,18 @@ function comprovaResultat(numPartida) {
     let partida = partides.find(x => x.codiPartida === numPartida); // Busquem la partida que el seu codiPartida sigui igual a numPartida
     partida.torn = -1;
     if (partida.crupierSum < partida.jugadorSum && partida.jugadorSum < 21) {
-        console.log("Guanya primer if");
         return guanya();
     } else if (partida.crupierSum > 21 && partida.jugadorSum < 21) {
-        console.log("Guanya segon if");
         return guanya();
     } else if (partida.jugadorSum == 21 && (partida.crupierSum < 21 || partida.crupierSum > 21)) {
-        console.log("Guanya tercer if");
         return "Blackjack! Has Guanyat";
     } else if (partida.crupierSum == 21 && (partida.jugadorSum < 21 || partida.jugadorSum > 21)) {
-        console.log("Perd quart if");
         return "Crupier Blackjack! Has Perdut";
     } else if (partida.jugadorSum > 21) {
-        console.log("Perd cinqué if");
         return perd();
     } else if (partida.jugadorSum < partida.crupierSum && partida.crupierSum < 21) {
-        console.log("Perd sisé if");
         return perd();
     } else if (partida.jugadorSum == partida.crupierSum) {
-        console.log("Empat");
         return "Hi ha un empat";
     }
 }
