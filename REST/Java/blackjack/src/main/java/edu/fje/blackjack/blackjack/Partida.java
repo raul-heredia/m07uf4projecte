@@ -1,24 +1,24 @@
 package edu.fje.blackjack.blackjack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Partida {
     private int codiPartida, torn, numCarta, jugadorSum, crupierSum;
-    private ArrayList cartesJugador, cartesCrupier, cartes;
+    private ArrayList cartesJugador, cartesCrupier, cartesPartida;
 
-    public Partida(int codiPartida){
-        this.codiPartida = codiPartida;
-    }
-
-    public Partida(int codiPartida, ArrayList cartes) {
+    public Partida(int codiPartida) {
         this.codiPartida = codiPartida;
         this.torn = 1;
-        this.numCarta = cartes.size();
+        this.cartesPartida = new ArrayList<Integer>(Arrays.asList(1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,10,10,10,10,10,10)); // Equivalent a dues baralles
         this.jugadorSum = 0;
         this.crupierSum = 0;
         this.cartesJugador = new ArrayList<Partida>();
-        this.cartesCrupier = new ArrayList<Partida>();;
-        this.cartes = cartes;
+        this.cartesCrupier = new ArrayList<Partida>();
+        this.numCarta = 26;
     }
 
     public int getCodiPartida() {
@@ -45,10 +45,6 @@ public class Partida {
         this.numCarta = numCarta;
     }
 
-    public void decrementaNumCarta(){
-        this.numCarta --;
-    }
-
     public int getJugadorSum() {
         return jugadorSum;
     }
@@ -69,8 +65,8 @@ public class Partida {
         return cartesJugador;
     }
 
-    public void setCartesJugador(Object carta) {
-        this.cartesJugador.add(carta);
+    public void setCartesJugador(ArrayList cartesJugador) {
+        this.cartesJugador = cartesJugador;
     }
 
     public ArrayList getCartesCrupier() {
@@ -81,13 +77,69 @@ public class Partida {
         this.cartesCrupier = cartesCrupier;
     }
 
-    public ArrayList getCartes() {
-        return cartes;
+    public ArrayList getCartesPartida() {
+        return cartesPartida;
     }
 
-    public void setCartes(ArrayList cartes) {
-        this.cartes = cartes;
+    public void setCartesPartida(ArrayList cartesPartida) {
+        this.cartesPartida = cartesPartida;
     }
+
+
+    // Metodos que usa la logica de blackjack
+
+    public void sumaTorn(){
+        this.torn ++;
+    }
+
+    public void afegeixCartaJugador(Object carta){
+        this.cartesJugador.add(carta);
+    }
+
+    public void afegeixSumaJugador(Object carta){
+        int valorCarta = (int) carta; // fem un cast del objecte a int
+        this.jugadorSum += valorCarta;
+    }
+
+
+    // Metodos blackjack
+    public void reduceNumCarta(){
+        this.numCarta --;
+    }
+
+
+
+    public String pideJugador(int indexPartida){
+        int max = this.getNumCarta();
+        int min = 0;
+        int rand = ThreadLocalRandom.current().nextInt(min, max + 1);
+        if (this.getTorn() == 1){
+            for (int i = 0; i < 2; i++) { // demanem dos cartes ja que la primera vegada es donen dues cartes
+                Object carta = this.getCartesPartida().get(rand);
+                this.afegeixCartaJugador(carta);
+                this.afegeixSumaJugador(carta);
+                this.sumaTorn();
+                this.getCartesPartida().remove(rand);
+                this.reduceNumCarta();
+                if (i == 0){
+                    rand = ThreadLocalRandom.current().nextInt(min, max + 1);
+                }
+            }
+            return this.getCartesJugador().toString();
+        }else{
+            Object carta = this.getCartesPartida().get(rand);
+            this.afegeixCartaJugador(carta);
+            this.afegeixSumaJugador(carta);
+            this.sumaTorn();
+            this.getCartesPartida().remove(rand);
+            this.reduceNumCarta();
+            return carta.toString();
+        }
+    }
+
+
+
+
 
     @Override
     public String toString() {
@@ -99,37 +151,20 @@ public class Partida {
                 ", crupierSum=" + crupierSum +
                 ", cartesJugador=" + cartesJugador +
                 ", cartesCrupier=" + cartesCrupier +
-                ", cartes=" + cartes +
+                ", cartesPartida=" + cartesPartida +
                 '}';
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Partida other = (Partida) obj;
-        if (this.codiPartida != other.codiPartida) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Partida)) return false;
+        Partida partida = (Partida) o;
+        return getCodiPartida() == partida.getCodiPartida();
     }
-    public void incrementaJugadorSum(Object carta){
-        //this.jugadorSum = this.jugadorSum + carta.
-    }
-    public Object treureCarta(int n){
-        Object carta = this.cartes.get(n);
-        incrementaJugadorSum(carta);
-        return carta;
-    }
-    public void eliminarCarta(int n){
-        decrementaNumCarta();
-        this.cartes.remove(n);
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCodiPartida());
     }
 }
