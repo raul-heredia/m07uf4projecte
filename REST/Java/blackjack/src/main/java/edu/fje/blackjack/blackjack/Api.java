@@ -32,9 +32,14 @@ public class Api {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
     public String crearPartida(@FormParam("codiPartida") int codiPartida) {
-        Partida partida = new Partida(codiPartida);
-        partides.add(partida);
-        return "Partida " + codiPartida + " creada";
+        int index = buscaPartida(codiPartida);
+        if(index == -1){
+            Partida partida = new Partida(codiPartida);
+            partides.add(partida);
+            return "Partida " + codiPartida + " creada";
+        }else{
+            return "Error, ya existe una partida con identificador: " + codiPartida;
+        }
     }
 
 
@@ -42,7 +47,12 @@ public class Api {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String detallsPartida(@PathParam("codiPartida") int codiPartida) {
-        return partides.get(buscaPartida(codiPartida)).toString();
+        int index = buscaPartida(codiPartida);
+        if(index != -1) {
+            return partides.get(buscaPartida(codiPartida)).toString();
+        }else{
+            return "Error, no existe ninguna partida con identificador: " + codiPartida;
+        }
     }
 
 
@@ -52,7 +62,7 @@ public class Api {
     public String obtenirCarta(@PathParam("codiPartida") int codiPartida) {
         int index = buscaPartida(codiPartida);
         if(index != -1){
-            return partides.get(index).pideJugador(index);
+            return partides.get(index).pideJugador();
         }else{
             return "Error, la partida " + codiPartida + " no existeix";
         }
@@ -69,7 +79,43 @@ public class Api {
             return "Error, la partida " + codiPartida + " no existeix";
         }
     }
+    @Path("/mostraCartesCrupier/{codiPartida}")
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public String mostrarCartesCrupier(@PathParam("codiPartida") int codiPartida) {
+        int index = buscaPartida(codiPartida);
+        if(index != -1){
+            return partides.get(index).getCartesCrupier().toString();
+        }else{
+            return "Error, la partida " + codiPartida + " no existeix";
+        }
+    }
 
+    @PUT
+    @Path("/plantarse")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String plantarse(@FormParam("codiPartida") int codiPartida) {
+        int index = buscaPartida(codiPartida);
+        if(index != -1){
+            return partides.get(index).plantarse();
+        }else{
+            return "Error, la partida " + codiPartida + " no existeix";
+        }
+    }
+
+    @Path("/acabarPartida/{codiPartida}")
+    @DELETE
+    @Produces(MediaType.TEXT_PLAIN)
+    public String acabarPartida(@PathParam("codiPartida") int codiPartida) {
+        int index = buscaPartida(codiPartida);
+        if(index != -1){
+            partides.remove(index);
+            return "Partida " + codiPartida + " eliminada.";
+        }else{
+            return "Error, no existe ninguna partida con identificador: " + codiPartida;
+        }
+    }
 
     /*@Path("/consultarTOTS")
     @GET

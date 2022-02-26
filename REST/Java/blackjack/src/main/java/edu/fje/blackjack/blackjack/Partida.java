@@ -18,7 +18,7 @@ public class Partida {
         this.crupierSum = 0;
         this.cartesJugador = new ArrayList<Partida>();
         this.cartesCrupier = new ArrayList<Partida>();
-        this.numCarta = 26;
+        this.numCarta = cartesPartida.size() - 1;
     }
 
     public int getCodiPartida() {
@@ -95,24 +95,55 @@ public class Partida {
     public void afegeixCartaJugador(Object carta){
         this.cartesJugador.add(carta);
     }
+    public void afegeixCartaCrupier(Object carta){
+        this.cartesCrupier.add(carta);
+    }
 
     public void afegeixSumaJugador(Object carta){
         int valorCarta = (int) carta; // fem un cast del objecte a int
         this.jugadorSum += valorCarta;
     }
+    public void afegeixSumaCrupier(Object carta){
+        int valorCarta = (int) carta; // fem un cast del objecte a int
+        this.crupierSum += valorCarta;
+    }
 
 
     // Metodos blackjack
     public void reduceNumCarta(){
-        this.numCarta --;
+        this.numCarta = this.cartesPartida.size() - 1; // -1 porque empieza en 0
+    }
+
+    public void pideCrupier(){
+        int max = this.getNumCarta() -1;
+        int min = 0;
+        int rand = ThreadLocalRandom.current().nextInt(min, max);
+        if (this.getTorn() == 1){
+            for (int i = 0; i < 2; i++) { // demanem dos cartes ja que la primera vegada es donen dues cartes
+                Object carta = this.getCartesPartida().get(rand);
+                this.afegeixCartaCrupier(carta);
+                this.afegeixSumaCrupier(carta);
+                this.getCartesPartida().remove(rand);
+                this.reduceNumCarta();
+                if (i == 0){
+                    rand = ThreadLocalRandom.current().nextInt(min, max);
+                }
+            }
+        }else{
+            Object carta = this.getCartesPartida().get(rand);
+            this.afegeixCartaCrupier(carta);
+            this.afegeixSumaCrupier(carta);
+            this.getCartesPartida().remove(rand);
+            this.reduceNumCarta();
+        }
     }
 
 
-
-    public String pideJugador(int indexPartida){
-        int max = this.getNumCarta();
+    public String pideJugador(){
+        int max = this.getNumCarta() -1;
         int min = 0;
-        int rand = ThreadLocalRandom.current().nextInt(min, max + 1);
+        int rand = ThreadLocalRandom.current().nextInt(min, max);
+        this.pideCrupier();
         if (this.getTorn() == 1){
             for (int i = 0; i < 2; i++) { // demanem dos cartes ja que la primera vegada es donen dues cartes
                 Object carta = this.getCartesPartida().get(rand);
@@ -122,7 +153,7 @@ public class Partida {
                 this.getCartesPartida().remove(rand);
                 this.reduceNumCarta();
                 if (i == 0){
-                    rand = ThreadLocalRandom.current().nextInt(min, max + 1);
+                    rand = ThreadLocalRandom.current().nextInt(min, max);
                 }
             }
             return this.getCartesJugador().toString();
@@ -137,9 +168,37 @@ public class Partida {
         }
     }
 
+    public String guanya(){
+        return "Has Guanyat!";
+    }
+    public String perd(){
+        return "Has Perdut";
+    }
 
 
+    public String comprovaResultat(){
+        if (this.crupierSum < this.jugadorSum && this.jugadorSum < 21) {
+            return guanya();
+        } else if (this.crupierSum > 21 && this.jugadorSum < 21) {
+            return guanya();
+        } else if (this.jugadorSum == 21 && (this.crupierSum < 21 || this.crupierSum > 21)) {
+            return "Blackjack! Has Guanyat";
+        } else if (this.crupierSum == 21 && (this.jugadorSum < 21 || this.jugadorSum > 21)) {
+            return "Crupier Blackjack! Has Perdut";
+        } else if (this.jugadorSum > 21) {
+            return perd();
+        } else if (this.jugadorSum < this.crupierSum && this.crupierSum < 21) {
+            return perd();
+        } else if (this.jugadorSum == this.crupierSum) {
+            return "Hi ha un empat";
+        }else{
+            return "";
+        }
+    }
 
+    public String plantarse(){
+        return this.comprovaResultat();
+    }
 
     @Override
     public String toString() {
