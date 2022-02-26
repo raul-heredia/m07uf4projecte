@@ -179,12 +179,12 @@ function comprovaResultat(numPartida) {
     } else if (partida.crupierSum > 21 && partida.jugadorSum < 21) {
         console.log("Guanya segon if");
         return guanya();
-    } else if (partida.jugadorSum == 21) {
+    } else if (partida.jugadorSum == 21 && (partida.crupierSum < 21 || partida.crupierSum > 21)) {
         console.log("Guanya tercer if");
-        return guanya();
-    } else if (partida.crupierSum == 21) {
+        return "Blackjack! Has Guanyat";
+    } else if (partida.crupierSum == 21 && (partida.jugadorSum < 21 || partida.jugadorSum > 21)) {
         console.log("Perd quart if");
-        return perd();
+        return "Crupier Blackjack! Has Perdut";
     } else if (partida.jugadorSum > 21) {
         console.log("Perd cinqué if");
         return perd();
@@ -199,12 +199,17 @@ function comprovaResultat(numPartida) {
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/crearPartida', (req, res) => {
-    console.log(`S\`ha creat la partida: ${req.body.codiPartida}`);
-    let cartesBaralla = Array.from(baralla);
-    let partida = { codiPartida: parseInt(req.body.codiPartida), torn: 1, numCarta: 52, jugadorSum: 0, cartesJugador: [], crupierSum: 0, cartesCrupier: [], cartes: cartesBaralla };
-    partides.push(partida);
-    res.send(`Partida ${req.body.codiPartida} creada!`);
-    //res.send(partides);
+    let checkPartida = partides.find(a => a.codiPartida === parseInt(req.body.codiPartida));
+    if (!checkPartida) {
+        console.log(`S\`ha creat la partida: ${req.body.codiPartida}`);
+        let cartesBaralla = Array.from(baralla);
+        let partida = { codiPartida: parseInt(req.body.codiPartida), torn: 1, numCarta: 52, jugadorSum: 0, cartesJugador: [], crupierSum: 0, cartesCrupier: [], cartes: cartesBaralla };
+        partides.push(partida);
+        res.send(`Partida ${req.body.codiPartida} creada!`);
+        //res.send(partides);
+    } else {
+        res.send(`Error, Ja existeix una partida amb indentificador: ${req.body.codiPartida}`);
+    }
 });
 app.get('/:codiPartida/detallsPartida', (req, res) => {
     res.send(partides.find(a => a.codiPartida === parseInt(req.params.codiPartida)));

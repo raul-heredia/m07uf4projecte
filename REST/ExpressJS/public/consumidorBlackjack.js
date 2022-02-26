@@ -25,6 +25,7 @@ function main() {
         if (crearPartida.value) {
             numPartida = crearPartida.value;
             sala.innerText = `Sala actual: ${numPartida}`;
+            crearPartida.value = '';
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
@@ -181,5 +182,6 @@ function main() {
     setPartidaBtn.addEventListener('click', () => {
         numPartida = crearPartida.value;
         sala.innerText = `Sala actual: ${numPartida}`;
+        crearPartida.value = '';
     })
 }

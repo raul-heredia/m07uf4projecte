@@ -220,11 +220,16 @@ type Mutation {
 
 const arrel = {
     crearPartida({ codiPartida }) {
-        console.log(`S\`ha creat la partida: ${codiPartida}`);
-        let cartesBaralla = Array.from(baralla);
-        let partida = { codiPartida: codiPartida, torn: 1, numCarta: 52, jugadorSum: 0, cartesJugador: [], crupierSum: 0, cartesCrupier: [], cartes: cartesBaralla };
-        partides.push(partida);
-        return `Partida ${codiPartida} creada!`;
+        let checkPartida = partides.find(a => a.codiPartida === codiPartida);
+        if (!checkPartida) {
+            console.log(`S\`ha creat la partida: ${codiPartida}`);
+            let cartesBaralla = Array.from(baralla);
+            let partida = { codiPartida: codiPartida, torn: 1, numCarta: 52, jugadorSum: 0, cartesJugador: [], crupierSum: 0, cartesCrupier: [], cartes: cartesBaralla };
+            partides.push(partida);
+            return `Partida ${codiPartida} creada!`;
+        } else {
+            return `Error, Ja existeix una partida amb indentificador: ${codiPartida}`;
+        }
     },
 
     detallsPartida({ codiPartida }) {
