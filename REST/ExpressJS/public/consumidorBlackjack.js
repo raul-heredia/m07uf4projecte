@@ -175,7 +175,10 @@ function main() {
 
         fetch(`http://localhost:3000/${numPartida}/acabaPartida`, requestOptions)
             .then(response => response.text())
-            .then(result => infoPartida.innerHTML = result)
+            .then(result => {
+                sala.innerText = `Crea una partida nova o selecciona una existent`;
+                infoPartida.innerHTML = result
+            })
             .catch(error => console.log('error', error));
     })
 

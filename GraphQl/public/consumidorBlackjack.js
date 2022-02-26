@@ -236,7 +236,10 @@ function main() {
 
         fetch("http://localhost:4000/graphql", requestOptions)
             .then(response => response.json())
-            .then(result => infoPartida.innerHTML = result.data.acabarPartida)
+            .then(result => {
+                sala.innerText = `Crea una partida nova o selecciona una existent`;
+                infoPartida.innerHTML = result.data.acabarPartida
+            })
             .catch(error => console.log('error', error));
     })
 
