@@ -180,10 +180,10 @@ function comprovaResultat(numPartida) {
         return guanya();
     } else if (partida.jugadorSum == 21 && (partida.crupierSum < 21 || partida.crupierSum > 21)) {
         console.log("Guanya tercer if");
-        return guanya();
+        return "Blackjack! Has Guanyat";
     } else if (partida.crupierSum == 21 && (partida.jugadorSum < 21 || partida.jugadorSum > 21)) {
         console.log("Perd quart if");
-        return perd();
+        return "Crupier Blackjack! Has Perdut";
     } else if (partida.jugadorSum > 21) {
         console.log("Perd cinqué if");
         return perd();
