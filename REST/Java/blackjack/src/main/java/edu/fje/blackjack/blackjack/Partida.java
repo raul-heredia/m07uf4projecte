@@ -223,6 +223,9 @@ public class Partida {
     }
 
     public String plantarse(){
+        while(this.crupierSum < 17){
+            this.pideCrupier();
+        }
         this.torn = -1;
         return this.comprovaResultat();
     }

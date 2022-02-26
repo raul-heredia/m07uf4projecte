@@ -126,6 +126,7 @@ function main() {
         fetch(`http://localhost:8080/blackjack_war_exploded/api/blackjack/mostraCartesCrupier/${numPartida}`, requestOptions)
             .then(response => response.json())
             .then(result => {
+                console.log(result)
                 infoPartida.innerHTML = `
                 <p>
                 Total de cartes: ${result.length}<br />
@@ -158,7 +159,6 @@ function main() {
         fetch("http://localhost:8080/blackjack_war_exploded/api/blackjack/plantarse", requestOptions)
             .then(response => response.text())
             .then(result => {
-                console.log(result)
                 infoPartida.innerHTML = `<h2>${result}</h2>`
             })
             .catch(error => console.log('error', error));
