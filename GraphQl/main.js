@@ -4,41 +4,6 @@ const { buildSchema } = require('graphql');
 const app = express();
 app.use(express.static('public'));
 
-/*
-Exemple CRUD amb Alumnes
-sergi.grau@fje.edu
-20.12.20 versio 1
-
-query {
-  obtenirAlumnes {
-    codi
-    nom
-  }
-}
-
-query {
-  obtenirAlumne(codi:"2") {
-    codi
-    nom
-  }
-}
-
-mutation {
-  esborrarAlumne(codi:"1")
-  afegirAlumne(nom:"PERE") {
-    codi
-    nom
-  }
-}
-
-mutation {
-  modificarAlumne(codi:"3", nom:"sergi") {
-    codi
-    nom
-  }
-}
-*/
-
 
 // VARIABLES BLACKJACK
 // T = Tréboles

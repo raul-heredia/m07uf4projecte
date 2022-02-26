@@ -162,35 +162,35 @@ function crupierAs(partida, carta) {
 
 function guanya(res) {
     console.log('Has guanyat');
-    res.send('Has guanyat');
+    return 'Has guanyat';
 }
 function perd(res) {
     console.log('Has perdut');
-    res.send('Has perdut');
+    return 'Has perdut';
 }
 
 
-function comprovaResultat(numPartida, req, res) {
+function comprovaResultat(numPartida) {
     let partida = partides.find(x => x.codiPartida === numPartida); // Busquem la partida que el seu codiPartida sigui igual a numPartida
     partida.torn = -1;
     if (partida.crupierSum < partida.jugadorSum && partida.jugadorSum < 21) {
         console.log("Guanya primer if");
-        guanya(res);
+        return guanya();
     } else if (partida.crupierSum > 21 && partida.jugadorSum < 21) {
         console.log("Guanya segon if");
-        guanya(res);
+        return guanya();
     } else if (partida.jugadorSum == 21) {
         console.log("Guanya tercer if");
-        guanya(res);
+        return guanya();
     } else if (partida.crupierSum == 21) {
         console.log("Perd quart if");
-        perd(res);
+        return perd();
     } else if (partida.jugadorSum > 21) {
         console.log("Perd cinqué if");
-        perd(res);
+        return perd();
     } else if (partida.jugadorSum < partida.crupierSum && partida.crupierSum < 21) {
         console.log("Perd sisé if");
-        return perd(res);
+        return perd();
     } else if (partida.jugadorSum == partida.crupierSum) {
         console.log("Empat");
         return "Hi ha un empat";
@@ -233,7 +233,13 @@ app.put('/:codiPartida/plantarse', (req, res) => {
     isPartidaGet(idPartida, req, res);
     isPartidaFinalitzada(idPartida, req, res);
     while (partida.crupierSum < 17) crupier(idPartida, req, res); // mentre que sigui menor a 17 demana cartes
-    comprovaResultat(idPartida, req, res);
+    let statusPartida = comprovaResultat(idPartida);
+    let resposta = {
+        estat: statusPartida,
+        marcadorJugador: partida.jugadorSum,
+        marcadorCrupier: partida.crupierSum
+    }
+    res.send(resposta);
 });
 app.delete('/:codiPartida/acabaPartida', (req, res) => {
     let idPartida = parseInt(req.params.codiPartida);

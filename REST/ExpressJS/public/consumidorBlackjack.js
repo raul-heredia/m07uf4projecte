@@ -155,8 +155,14 @@ function main() {
         };
 
         fetch(`http://localhost:3000/${numPartida}/plantarse`, requestOptions)
-            .then(response => response.text())
-            .then(result => infoPartida.innerHTML = `<h2>${result}</h2>`)
+            .then(response => response.json())
+            .then(result => {
+                console.log(result)
+                infoPartida.innerHTML = `
+                <h2>${result.estat}</h2>
+                <p><b>El teu marcador: </b>${result.marcadorJugador}</p>
+                <p><b>Marcador del crupier: </b>${result.marcadorCrupier}</p>`
+            })
             .catch(error => console.log('error', error));
     })
 
